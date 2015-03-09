@@ -171,9 +171,43 @@ class GuzzleDataCollector extends DataCollector
     {
         $response = $request->getResponse();
 
-        return array(
-            'total'      => $response->getInfo('total_time'),
-            'connection' => $response->getInfo('connect_time')
+        $timing = array(
+            'resolving' => array(
+                'start' => 0,
+                'end' => $response->getInfo('namelookup_time'),
+            ),
+            'connecting' => array(
+                'start' => $response->getInfo('namelookup_time'),
+                'end' => $response->getInfo('connect_time'),
+            ),
+            'negotiating' => array(
+                'start' => $response->getInfo('connect_time'),
+                'end' => $response->getInfo('pretransfer_time'),
+            ),
+            'waiting' =>  array(
+                'start' => $response->getInfo('pretransfer_time'),
+                'end' => $response->getInfo('starttransfer_time'),
+            ),
+            'processing' =>  array(
+                'start' => $response->getInfo('starttransfer_time'),
+                'end' => $response->getInfo('total_time'),
+            ),
         );
+
+        $total = $response->getInfo('total_time');
+
+        foreach ($timing as &$category) {
+            $category['duration'] = $category['end'] - $category['start'];
+            $category['percentage'] = 0;
+            $category['start_percentage'] = 0;
+            if ($total != 0) {
+                $category['percentage'] = $category['duration'] / $total * 100;
+                $category['start_percentage'] = $category['start'] / $total * 100;
+            }
+        }
+
+        $timing['total'] = $total;
+
+        return $timing;
     }
 }

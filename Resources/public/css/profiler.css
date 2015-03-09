@@ -219,7 +219,7 @@ div.guzzle div.request pre.prettyprint {
     color: white;
     text-align: center;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-    background-color: #0E90D2;
+    background-color: #337AB7;
     background-image: -moz-linear-gradient(top, #149BDF, #0480BE);
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#149BDF), to(#0480BE));
     background-image: -webkit-linear-gradient(top, #149BDF, #0480BE);
@@ -295,6 +295,29 @@ div.guzzle div.request pre.prettyprint {
     background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
     background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
     background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+}
+
+.progress .bar-invisible {
+   background: transparent;
+   box-shadow: none;
+}
+.progress .bar-resolving {
+    background-color: #7762C4;
+}
+.progress .bar-negotiating {
+    background-color: #5BC0DE;
+}
+.progress .bar-waiting {
+    background-color: #F0AD4E;
+}
+.progress .bar-processing {
+    background-color: #62C462;
+}
+.guzzle-timing td {
+   width: 100%;
+}
+.guzzle-timing th {
+   white-space: nowrap;
 }
 
 /* Bootstrap nav */
