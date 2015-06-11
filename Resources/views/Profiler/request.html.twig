@@ -1,79 +1,79 @@
 {% macro display_array_recursive(array, separator = ', ', opening_char = '[', closing_char = ']') -%}
-{{ opening_char }}
-{%- for key, value in array -%}
-    {%- if value is iterable -%}
-        {{ key }} => {{ _self.display_array_recursive(value, separator, opening_char, closing_char) }}
-    {%- else -%}
-        {{ key }} => {{ value }}
-        {%- if not loop.last %}{{ separator }}{% endif -%}
-    {%- endif -%}
-{%- endfor -%}
-{{ closing_char }}
+    {{ opening_char }}
+    {%- for key, value in array -%}
+        {%- if value is iterable -%}
+            {{ key }} => {{ _self.display_array_recursive(value, separator, opening_char, closing_char) }}
+        {%- else -%}
+            {{ key }} => {{ value }}
+            {%- if not loop.last %}{{ separator }}{% endif -%}
+        {%- endif -%}
+    {%- endfor -%}
+    {{ closing_char }}
 {%- endmacro %}
 
 <div id="request_{{ index }}" class="tab-pane active">
     {% if time.total > 0 %}
 
-      <h5>Time</h5>
-      <table>
-          <tbody class='guzzle-timing'>
-              {% for activity, timing in time if activity != 'total' %}
-                  <tr>
-                      <th>
-                          {{ activity|title }} {{ (timing.duration * 1000)|number_format(0, '', '') }} <small>ms</small> - {{ timing.percentage|number_format(0, '', '') }}%
-                          {% if activity == 'waiting' %}
-                          <br/><small>Time to First Byte {{ (timing.end * 1000)|number_format(0) }} ms</small>
-                          {% endif %}
-                      </th>
-                      <td>
-                          <div class="progress progress-striped">
-                              <div class="progress-bar bar-invisible" style="width: {{ timing.start_percentage|number_format(2) }}%;"></div>
-                              <div class="progress-bar bar-{{ activity }}" style="width: {{ timing.percentage|number_format(2) }}%;"></div>
-                          </div>
-                      </td>
-                  </tr>
-              {% endfor %}
-              <tr>
-                  <th>Total {{ (time.total * 1000)|number_format(0) }} <small>ms</small></th>
-                  <td></td>
-              </tr>
-          </tbody>
-      </table>
+        <h5>Time</h5>
+        <table>
+            <tbody class='guzzle-timing'>
+            {% for activity, timing in time if activity != 'total' and false %}
+                <tr>
+                    <th>
+                        {{ activity|title }} {{ (timing.duration * 1000)|number_format(0, '', '') }} <small>ms</small> - {{ timing.percentage|number_format(0, '', '') }}%
+                        {% if activity == 'waiting' %}
+                            <br/><small>Time to First Byte {{ (timing.end * 1000)|number_format(0) }} ms</small>
+                        {% endif %}
+                    </th>
+                    <td>
+                        <div class="progress progress-striped">
+                            <div class="progress-bar bar bar-invisible" style="width: {{ timing.start_percentage|number_format(2) }}%;"></div>
+                            <div class="progress-bar bar bar-{{ activity }}" style="width: {{ timing.percentage|number_format(2) }}%;"></div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <th>Total {{ (time.total * 1000)|number_format(0) }} <small>ms</small></th>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
     {% endif %}
 
     <h5>Information</h5>
     <table>
         <tbody>
-            <tr>
-                <th>Method</th>
-                <td>{{ request.method }}</td>
-            </tr>
-            <tr>
-                <th>Protocol</th>
-                <td>{{ request.scheme }}</td>
-            </tr>
-            <tr>
-                <th>Host</th>
-                <td>{{ request.host }}</td>
-            </tr>
-            <tr>
-                <th>Port</th>
-                <td>{{ request.port }}</td>
-            </tr>
-            <tr>
-                <th>Path</th>
-                <td>{{ request.path }}</td>
-            </tr>
-            <tr>
-                <th>Query</th>
-                <td>{{ request.query }}</td>
-            </tr>
-            {% if request.method == 'GET' %}
+        <tr>
+            <th>Method</th>
+            <td>{{ request.method }}</td>
+        </tr>
+        <tr>
+            <th>Protocol</th>
+            <td>{{ request.scheme }}</td>
+        </tr>
+        <tr>
+            <th>Host</th>
+            <td>{{ request.host }}</td>
+        </tr>
+        <tr>
+            <th>Port</th>
+            <td>{{ request.port }}</td>
+        </tr>
+        <tr>
+            <th>Path</th>
+            <td>{{ request.path }}</td>
+        </tr>
+        <tr>
+            <th>Query</th>
+            <td>{{ request.query }}</td>
+        </tr>
+        {% if request.method == 'GET' %}
             <tr>
                 <th>URL</th>
-                <td><a href="{{ request.scheme }}://{{ request.host }}{{ request.path }}?{{ request.query }}">{{ request.scheme }}://{{ request.host }}{{ request.path }}?{{ request.query }}</a></td>
+                <td><a href="{{ request.scheme }}://{{ request.host }}:{{ request.port }}{{ request.path }}?{{ request.query }}">{{ request.scheme }}://{{ request.host }}{{ request.path }}?{{ request.query }}</a></td>
             </tr>
-            {% endif %}
+        {% endif %}
         </tbody>
     </table>
 
@@ -108,7 +108,9 @@
     </table>
 
     {% if request.body is not empty %}
-        <h5>Content</h5>
-        <pre class="prettyprint linenums"><code class="language-javascript  ">{{ request.body|replace({"\t\t\n": "", "\t": "  "}) }}</code></pre>
+        {% set request_id = random(1000000) %}
+        {% set is_json_request = ('application/json' == (request.headers['content-type'] ~ '')[0:16]) %}
+        <h5>Content <a class="format-r-{{ request_id }}" data-target="#r-{{ request_id }}" href="#">Format</a></h5>
+        <pre id='r-{{ request_id }}' class="{{ is_json_request ? 'json' }}">{{ request.body }}</pre>
     {% endif %}
 </div>

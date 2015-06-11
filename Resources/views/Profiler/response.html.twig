@@ -1,15 +1,15 @@
 <div id="response_{{ index }}" class="tab-pane">
-    <h5>Information</h5>
+    <h5>Information bar</h5>
     <table>
         <tbody>
-            <tr>
-                <th>Code</th>
-                <td>{{ response.statusCode }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ response.reasonPhrase }}</td>
-            </tr>
+        <tr>
+            <th>Code</th>
+            <td>{{ response.statusCode }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>{{ response.reasonPhrase }}</td>
+        </tr>
         </tbody>
     </table>
 
@@ -27,6 +27,8 @@
         </tbody>
     </table>
 
-    <h5>Content</h5>
-    <pre class="prettyprint linenums"><code class="language-javascript  ">{{ response.body|replace({"\t\t\n": "", "\t": "  "}) }}</code></pre>
+    {% set response_id = random(1000000) %}
+    {% set is_json_response = ('application/json' == (response.headers['content-type']|default('') ~ '')[0:16]) %}
+    <h5>Content <a class="format-r-{{ response_id }}" data-target="#r-{{ response_id }}" href="#">Format</a></h5>
+    <pre id='r-{{ response_id }}' class='{{ is_json_response ? 'json' }}'>{{ response.body }}</pre>
 </div>
