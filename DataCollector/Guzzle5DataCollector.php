@@ -44,8 +44,7 @@ class Guzzle5DataCollector
                 'request' => $requestData,
                 'response' => $responseData,
                 'time' => $time,
-                'error' => $responseData['is_error'],
-                'guzzle_version' => 5,
+                'error' => $responseData['is_error']
             ];
         }
 
