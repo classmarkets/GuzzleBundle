@@ -5,11 +5,18 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="data_collector.guzzle" class="Playbloom\Bundle\GuzzleBundle\DataCollector\GuzzleDataCollector">
+        <service id="data_collector.guzzle" class="Playbloom\Bundle\GuzzleBundle\DataCollector\CompositeGuzzleDataCollector">
+            <argument type="service" id="data_collector.guzzle_3"/>
+            <argument type="service" id="data_collector.guzzle_5"/>
+            <tag name="data_collector" template="PlaybloomGuzzleBundle:Collector:guzzle" id="guzzle"/>
+        </service>
+
+        <service id="data_collector.guzzle_3" class="Playbloom\Bundle\GuzzleBundle\DataCollector\Guzzle3DataCollector">
             <argument type="service" id="playbloom_guzzle.client.plugin.profiler"/>
-            <tag name="data_collector"
-                template="PlaybloomGuzzleBundle:Collector:guzzle"
-                id="guzzle"/>
+        </service>
+
+        <service id="data_collector.guzzle_5" class="Playbloom\Bundle\GuzzleBundle\DataCollector\Guzzle5DataCollector">
+            <argument type="service" id="playbloom_guzzlehttp.client.plugin.profiler"/>
         </service>
     </services>
 

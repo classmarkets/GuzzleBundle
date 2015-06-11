@@ -2,7 +2,7 @@
 
 namespace Playbloom\Bundle\GuzzleBundle\Tests\DataCollector;
 
-use Playbloom\Bundle\GuzzleBundle\DataCollector\GuzzleDataCollector;
+use Playbloom\Bundle\GuzzleBundle\DataCollector\Guzzle3DataCollector;
 use Guzzle\Plugin\History\HistoryPlugin;
 
 /**
@@ -10,7 +10,7 @@ use Guzzle\Plugin\History\HistoryPlugin;
  *
  * @author Ludovic Fleury <ludo.fleury@gmail.com>
  */
-class GuzzleDataCollectorTest extends \PHPUnit_Framework_TestCase
+class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetName()
     {

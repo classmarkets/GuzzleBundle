@@ -7,15 +7,9 @@ use Guzzle\Plugin\History\HistoryPlugin;
 use Guzzle\Http\Message\RequestInterface as GuzzleRequestInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Guzzle\Http\Message\EntityEnclosingRequestInterface;
 
-/**
- * GuzzleDataCollector.
- *
- * @author Ludovic Fleury <ludo.fleury@gmail.com>
- */
-class GuzzleDataCollector extends DataCollector
+class Guzzle3DataCollector
 {
     private $profiler;
 
@@ -68,57 +62,18 @@ class GuzzleDataCollector extends DataCollector
                 'request' => $request,
                 'response' => $response,
                 'time' => $time,
-                'error' => $error
+                'error' => $error,
+                'guzzle_version' => 3,
             );
         }
 
-        $this->data = $data;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCalls()
-    {
-        return isset($this->data['calls']) ? $this->data['calls'] : array();
-    }
-
-    /**
-     * @return int
-     */
-    public function countErrors()
-    {
-        return isset($this->data['error_count']) ? $this->data['error_count'] : 0;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMethods()
-    {
-        return isset($this->data['methods']) ? $this->data['methods'] : array();
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalTime()
-    {
-        return isset($this->data['total_time']) ? $this->data['total_time'] : 0;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'guzzle';
+        return $data;
     }
 
     /**
      * Collect & sanitize data about a Guzzle request
      *
-     * @param Guzzle\Http\Message\RequestInterface $request
+     * @param \Guzzle\Http\Message\RequestInterface $request
      *
      * @return array
      */
@@ -134,7 +89,7 @@ class GuzzleDataCollector extends DataCollector
             'method'  => $request->getMethod(),
             'scheme'  => $request->getScheme(),
             'host'    => $request->getHost(),
-	    'port'    => $request->getPort(),
+            'port'    => $request->getPort(),
             'path'    => $request->getPath(),
             'query'   => $request->getQuery(),
             'body'    => $body
@@ -144,7 +99,7 @@ class GuzzleDataCollector extends DataCollector
     /**
      * Collect & sanitize data about a Guzzle response
      *
-     * @param Guzzle\Http\Message\RequestInterface $request
+     * @param \Guzzle\Http\Message\RequestInterface $request
      *
      * @return array
      */
@@ -164,7 +119,7 @@ class GuzzleDataCollector extends DataCollector
     /**
      * Collect time for a Guzzle request
      *
-     * @param Guzzle\Http\Message\RequestInterface $request
+     * @param \Guzzle\Http\Message\RequestInterface $request
      *
      * @return array
      */
