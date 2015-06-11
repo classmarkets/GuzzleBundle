@@ -11,12 +11,15 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
 
 class CompositeGuzzleDataCollector extends DataCollector
 {
-    /** @var  DataCollectorInterface[] */
+    /** @var DataCollectorInterface[] */
     private $collectors;
 
-    public function __construct(DataCollectorInterface ...$collectors)
+    public function __construct(Guzzle3DataCollector $guzzle3DataCollector, Guzzle5DataCollector $guzzle5DataCollector)
     {
-        $this->collectors = $collectors;
+        $this->collectors = [
+            $guzzle3DataCollector,
+            $guzzle5DataCollector
+        ];
     }
 
     public function getName()
@@ -37,15 +40,15 @@ class CompositeGuzzleDataCollector extends DataCollector
             $data = $collector->collect($request, $response, $exception);
             foreach ($data['methods'] as $method => $methodCounter) {
                 if (array_key_exists($method, $allData) == false) {
-                    $allData[$method] = 0;
+                    $allData['methods'][$method] = 0;
                 }
-                $allData[$method] += $methodCounter;
+                $allData['methods'][$method] += $methodCounter;
 
                 $allData['total_time'] += $data['total_time'];
                 $allData['error_count'] += $data['error_count'];
 
                 if (count($data['calls']) > 0) {
-                    $data['calls'][] = $data['calls'];
+                    $allData['calls'] = array_merge($allData['calls'], $data['calls']);
                 }
             }
         }

@@ -62,7 +62,8 @@ class Guzzle3DataCollector
                 'request' => $request,
                 'response' => $response,
                 'time' => $time,
-                'error' => $error
+                'error' => $error,
+                'guzzle_version' => 3,
             );
         }
 

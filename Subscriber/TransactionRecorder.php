@@ -11,10 +11,10 @@ use GuzzleHttp\Transaction;
 class TransactionRecorder implements SubscriberInterface
 {
     /** @var Transaction[] */
-    private $transactions;
+    private $transactions = array();
 
     /** @var int The maximum number of requests to maintain in the history */
-    private $limit = PHP_INT_MAX;
+    private $limit;
 
     public function __construct($limit = 10)
     {
@@ -24,8 +24,8 @@ class TransactionRecorder implements SubscriberInterface
     public function getEvents()
     {
         return [
-            'complete' => ['onComplete', RequestEvents::EARLY],
-            'error'    => ['onError', RequestEvents::EARLY],
+            'complete' => ['onComplete', RequestEvents::LATE],
+            'error'    => ['onError', RequestEvents::LATE],
         ];
     }
 

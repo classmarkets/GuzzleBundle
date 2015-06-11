@@ -44,7 +44,8 @@ class Guzzle5DataCollector
                 'request' => $requestData,
                 'response' => $responseData,
                 'time' => $time,
-                'error' => $responseData['is_error']
+                'error' => $responseData['is_error'],
+                'guzzle_version' => 5,
             ];
         }
 
@@ -62,6 +63,11 @@ class Guzzle5DataCollector
 
     private function collectRequest(RequestInterface $request)
     {
+        $requestBody = '';
+        if ($body = $request->getBody()) {
+            $requestBody = (string) $body;
+        }
+
         return array(
             'headers' => $request->getHeaders(),
             'method'  => $request->getMethod(),
@@ -69,21 +75,24 @@ class Guzzle5DataCollector
             'host'    => $request->getHost(),
             'port'    => $request->getPort(),
             'path'    => $request->getPath(),
-            'query'   => $request->getQuery(),
-            'body'    => (string) $request->getBody(),
+            'query'   => new Guzzle5Query($request->getQuery()),
+            'body'    => $requestBody,
         );
     }
 
     private function collectResponse(ResponseInterface $response)
     {
-        $body = $response->getBody();
+        $responseBody = '';
+        if ($body = $response->getBody()) {
+            $responseBody = (string) $body;
+        }
 
         return array(
             'statusCode'   => $response->getStatusCode(),
             'reasonPhrase' => $response->getReasonPhrase(),
             'headers'      => $response->getHeaders(),
             'is_error'     => $response->getStatusCode() >= 400,
-            'body'         => $body,
+            'body'         => $responseBody,
         );
     }
 
