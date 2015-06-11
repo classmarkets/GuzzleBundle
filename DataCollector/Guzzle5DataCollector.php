@@ -98,9 +98,43 @@ class Guzzle5DataCollector
 
     private function collectTime(array $transferInfo)
     {
-        return [
-            'total'      => isset($transferInfo['total_time']) ? $transferInfo['total_time'] : 0,
-            'connection' => isset($transferInfo['connect_time']) ? $transferInfo['connect_time'] : 0,
-        ];
+        $timing = array(
+            'resolving' => array(
+                'start' => 0,
+                'end' => $transferInfo['namelookup_time'],
+            ),
+            'connecting' => array(
+                'start' => $transferInfo['namelookup_time'],
+                'end' => $transferInfo['connect_time'],
+            ),
+            'negotiating' => array(
+                'start' => $transferInfo['connect_time'],
+                'end' => $transferInfo['pretransfer_time'],
+            ),
+            'waiting' =>  array(
+                'start' => $transferInfo['pretransfer_time'],
+                'end' => $transferInfo['starttransfer_time'],
+            ),
+            'processing' =>  array(
+                'start' => $transferInfo['starttransfer_time'],
+                'end' => $transferInfo['total_time'],
+            ),
+        );
+
+        $total = $transferInfo['total_time'];
+
+        foreach ($timing as &$category) {
+            $category['duration'] = $category['end'] - $category['start'];
+            $category['percentage'] = 0;
+            $category['start_percentage'] = 0;
+            if ($total != 0) {
+                $category['percentage'] = $category['duration'] / $total * 100;
+                $category['start_percentage'] = $category['start'] / $total * 100;
+            }
+        }
+
+        $timing['total'] = $total;
+
+        return $timing;
     }
 }
