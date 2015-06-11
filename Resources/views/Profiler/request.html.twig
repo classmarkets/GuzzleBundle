@@ -17,7 +17,7 @@
         <h5>Time</h5>
         <table>
             <tbody class='guzzle-timing'>
-            {% for activity, timing in time if activity != 'total' and false %}
+            {% for activity, timing in time if activity != 'total' %}
                 <tr>
                     <th>
                         {{ activity|title }} {{ (timing.duration * 1000)|number_format(0, '', '') }} <small>ms</small> - {{ timing.percentage|number_format(0, '', '') }}%
