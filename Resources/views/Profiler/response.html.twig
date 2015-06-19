@@ -28,7 +28,16 @@
     </table>
 
     {% set response_id = random(1000000) %}
-    {% set is_json_response = ('application/json' == (response.headers['content-type']|default('') ~ '')[0:16]) %}
+
+    {% if response.headers['content-type'][0] is defined %}
+      {% set content_type = response.headers['content-type'][0] %}
+    {% else if response.headers['content-type'] is defined  %}
+      {% set content_type = response.headers['content-type'] ~ '' %}
+    {% else %}
+      {% set content_type = '' %}
+    {% endif %}
+
+    {% set is_json_response = ('application/json' == content_type[0:16]) %}
     <h5>Content <a class="format-r-{{ response_id }}" data-target="#r-{{ response_id }}" href="#">Format</a></h5>
     <pre id='r-{{ response_id }}' class='{{ is_json_response ? 'json' }}'>{{ response.body }}</pre>
 </div>

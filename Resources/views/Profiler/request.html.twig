@@ -109,7 +109,16 @@
 
     {% if request.body is not empty %}
         {% set request_id = random(1000000) %}
-        {% set is_json_request = ('application/json' == (request.headers['content-type'] ~ '')[0:16]) %}
+
+        {% if request.headers['content-type'][0] is defined %}
+          {% set content_type = request.headers['content-type'][0] %}
+        {% else if request.headers['content-type'] is defined %}
+          {% set content_type = request.headers['content-type'] ~ '' %}
+        {% else %}
+          {% set content_type = '' %}
+        {% endif %}
+
+        {% set is_json_request = ('application/json' == content_type[0:16]) %}
         <h5>Content <a class="format-r-{{ request_id }}" data-target="#r-{{ request_id }}" href="#">Format</a></h5>
         <pre id='r-{{ request_id }}' class="{{ is_json_request ? 'json' }}">{{ request.body }}</pre>
     {% endif %}
