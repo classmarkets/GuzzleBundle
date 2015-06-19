@@ -112,7 +112,7 @@
 
         {% if request.headers['content-type'][0] is defined %}
           {% set content_type = request.headers['content-type'][0] %}
-        {% else if request.headers['content-type'] is defined %}
+        {% elseif request.headers['content-type'] is defined %}
           {% set content_type = request.headers['content-type'] ~ '' %}
         {% else %}
           {% set content_type = '' %}
