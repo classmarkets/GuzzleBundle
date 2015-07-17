@@ -9,6 +9,9 @@
         <div class="code">
             <abbr title="{{ call.response.reasonPhrase }}">{{ call.response.statusCode }}</abbr>
         </div>
+        {% if call.cached %}
+            <div class="cache-hit">(cached)</div>
+        {% endif %}
     </div>
 
     <div class="details">

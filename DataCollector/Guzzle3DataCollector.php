@@ -2,6 +2,8 @@
 
 namespace Playbloom\Bundle\GuzzleBundle\DataCollector;
 
+use Guzzle\Http\Message\Header;
+use Guzzle\Http\Message\Header\HeaderCollection;
 use Guzzle\Plugin\History\HistoryPlugin;
 
 use Guzzle\Http\Message\RequestInterface as GuzzleRequestInterface;
@@ -58,11 +60,21 @@ class Guzzle3DataCollector
 
             $aggregate($request, $response, $time, $error);
 
+            /** @var HeaderCollection $responseHeaders */
+            $wasCached = false;
+            $responseHeaders = $response['headers'];
+            /** @var Header $cacheHeader */
+            $cacheHeader = $responseHeaders->get('x-cache');
+            if (isset($cacheHeader)) {
+                $wasCached = $cacheHeader->hasValue('HIT from GuzzleCache');
+            }
+
             $data['calls'][] = array(
                 'request' => $request,
                 'response' => $response,
                 'time' => $time,
-                'error' => $error
+                'error' => $error,
+                'cached' => $wasCached,
             );
         }
 

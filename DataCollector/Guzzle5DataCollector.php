@@ -40,11 +40,14 @@ class Guzzle5DataCollector
             $data['total_time'] += $time['total'];
             $data['error_count'] += (int) $responseData['is_error'];
 
+            $wasCached = $transaction->request->getConfig()->get('cache_hit');
+
             $data['calls'][] = [
                 'request' => $requestData,
                 'response' => $responseData,
                 'time' => $time,
-                'error' => $responseData['is_error']
+                'error' => $responseData['is_error'],
+                'cached' => $wasCached,
             ];
         }
 
