@@ -97,30 +97,46 @@ class Guzzle5DataCollector
 
     private function collectTime(array $transferInfo)
     {
-        $timing = array(
-            'resolving' => array(
+        $timing = array();
+        if (isset($transferInfo['namelookup_time'])) {
+            $timing['resolving'] = array(
                 'start' => 0,
                 'end' => $transferInfo['namelookup_time'],
-            ),
-            'connecting' => array(
+            );
+        }
+
+        if (isset($transferInfo['namelookup_time']) && isset($transferInfo['connect_time'])) {
+            $timing['connecting'] = array(
                 'start' => $transferInfo['namelookup_time'],
                 'end' => $transferInfo['connect_time'],
-            ),
-            'negotiating' => array(
+            );
+        }
+
+        if (isset($transferInfo['connect_time']) && isset($transferInfo['pretransfer_time'])) {
+            $timing['negotiating'] = array(
                 'start' => $transferInfo['connect_time'],
                 'end' => $transferInfo['pretransfer_time'],
-            ),
-            'waiting' =>  array(
+            );
+        }
+
+        if (isset($transferInfo['pretransfer_time']) && isset($transferInfo['starttransfer_time'])) {
+            $timing['waiting'] =  array(
                 'start' => $transferInfo['pretransfer_time'],
                 'end' => $transferInfo['starttransfer_time'],
-            ),
-            'processing' =>  array(
+            );
+        }
+
+        if (isset($transferInfo['starttransfer_time']) && isset($transferInfo['total_time'])) {
+            $timing['processing'] =  array(
                 'start' => $transferInfo['starttransfer_time'],
                 'end' => $transferInfo['total_time'],
-            ),
-        );
+            );
+        }
 
-        $total = $transferInfo['total_time'];
+        $total = 0;
+        if (isset($transferInfo['total_time'])) {
+            $total = $transferInfo['total_time'];
+        }
 
         foreach ($timing as &$category) {
             $category['duration'] = $category['end'] - $category['start'];
