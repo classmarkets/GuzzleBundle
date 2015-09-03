@@ -29,7 +29,9 @@
 
     {% set response_id = random(1000000) %}
 
-    {% if response.headers['content-type'][0] is defined %}
+    {% if response.headers['Content-Type'][0] is defined %}
+      {% set content_type = response.headers['Content-Type'][0] %}
+    {% elseif response.headers['content-type'][0] is defined %}
       {% set content_type = response.headers['content-type'][0] %}
     {% elseif response.headers['content-type'] is defined  %}
       {% set content_type = response.headers['content-type'] ~ '' %}

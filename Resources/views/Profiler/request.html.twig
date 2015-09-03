@@ -110,7 +110,9 @@
     {% if request.body is not empty %}
         {% set request_id = random(1000000) %}
 
-        {% if request.headers['content-type'][0] is defined %}
+        {% if request.headers['Content-Type'][0] is defined %}
+          {% set content_type = request.headers['Content-Type'][0] %}
+        {% elseif request.headers['content-type'][0] is defined %}
           {% set content_type = request.headers['content-type'][0] %}
         {% elseif request.headers['content-type'] is defined %}
           {% set content_type = request.headers['content-type'] ~ '' %}
