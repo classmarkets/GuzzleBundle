@@ -36,10 +36,9 @@ class TransactionRecorder implements SubscriberInterface
 
     public function onError(ErrorEvent $event)
     {
-        // Only track when no response is present, meaning this didn't ever emit a complete event
-        if (!$event->getResponse()) {
-            $this->add($event->getTransaction());
-        }
+        $lightTx = clone $event->getTransaction();
+        unset($lightTx->exception);
+        $this->add($lightTx);
     }
 
     private function add(Transaction $transaction)
