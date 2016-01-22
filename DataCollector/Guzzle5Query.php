@@ -3,9 +3,11 @@
 namespace Playbloom\Bundle\GuzzleBundle\DataCollector;
 
 use ArrayAccess;
+use ArrayIterator;
 use GuzzleHttp\Query;
+use IteratorAggregate;
 
-class Guzzle5Query implements ArrayAccess
+class Guzzle5Query implements ArrayAccess, IteratorAggregate
 {
     private $queryArray;
     private $queryString;
@@ -19,6 +21,11 @@ class Guzzle5Query implements ArrayAccess
     public function __toString()
     {
         return $this->queryString;
+    }
+
+    public function getIterator()
+    {
+        return new ArrayIterator($this->queryArray);
     }
 
     public function offsetExists($offset)
