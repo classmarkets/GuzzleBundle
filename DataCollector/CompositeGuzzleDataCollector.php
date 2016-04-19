@@ -43,10 +43,10 @@ class CompositeGuzzleDataCollector extends DataCollector
                     $allData['methods'][$method] = 0;
                 }
                 $allData['methods'][$method] += $methodCounter;
-
-                $allData['total_time'] += $data['total_time'];
-                $allData['error_count'] += $data['error_count'];
             }
+
+            $allData['total_time'] += $data['total_time'];
+            $allData['error_count'] += $data['error_count'];
 
             if (count($data['calls']) > 0) {
                 $allData['calls'] = array_merge($allData['calls'], $data['calls']);

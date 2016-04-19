@@ -82,8 +82,18 @@ class Guzzle5DataCollector
         );
     }
 
-    private function collectResponse(ResponseInterface $response)
+    private function collectResponse(ResponseInterface $response = null)
     {
+        if ($response === null) {
+            return [
+                'statusCode' => '-',
+                'reasonPhrase' => 'no response',
+                'headers' => [],
+                'is_error' => true,
+                'body' => '',
+            ];
+        }
+
         $responseBody = '';
         if ($body = $response->getBody()) {
             $responseBody = (string) $body;
