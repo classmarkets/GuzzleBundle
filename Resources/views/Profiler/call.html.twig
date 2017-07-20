@@ -25,7 +25,7 @@
         </ul>
 
         <div class="tab-content">
-            {% include 'PlaybloomGuzzleBundle:Profiler:request.html.twig' with {'index':index, 'request': call.request, 'time': call.time } %}
+            {% include 'PlaybloomGuzzleBundle:Profiler:request.html.twig' with {'index':index, 'request': call.request, 'time': call.time, 'trace': call.trace|default([]) } %}
             {% include 'PlaybloomGuzzleBundle:Profiler:response.html.twig' with {'index':index, 'response':call.response} %}
         </div>
 

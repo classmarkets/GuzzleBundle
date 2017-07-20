@@ -14,9 +14,13 @@ class Guzzle5DataCollector
     /** @var TransactionRecorder */
     private $transactionRecorder;
 
-    public function __construct(TransactionRecorder $guzzle5Profiler)
+    /** @var string Name of the project root directory. Will be stripped from stack traces */
+    private $projectRoot;
+
+    public function __construct(TransactionRecorder $guzzle5Profiler, $kernelRoot)
     {
         $this->transactionRecorder = $guzzle5Profiler;
+        $this->projectRoot = dirname($kernelRoot) . DIRECTORY_SEPARATOR;
     }
 
     public function collect(Request $request, Response $response, \Exception $exception = null)
@@ -29,7 +33,10 @@ class Guzzle5DataCollector
         ];
 
         foreach ($this->transactionRecorder->getTransactions() as $transaction) {
-            list($requestData, $responseData, $time) = $this->collectGuzzle5Transaction($transaction);
+            $requestData = $this->collectRequest($transaction->request);
+            $responseData = $this->collectResponse($transaction->response);
+            $time = $this->collectTime($transaction->transferInfo);
+            $trace = $this->collectStackTrace($transaction);
 
             $method = $requestData['method'];
             if (!isset($data['methods'][$method])) {
@@ -48,19 +55,11 @@ class Guzzle5DataCollector
                 'time' => $time,
                 'error' => $responseData['is_error'],
                 'cached' => $wasCached,
+                'trace' => $trace,
             ];
         }
 
         return $data;
-    }
-
-    private function collectGuzzle5Transaction(Transaction $transaction)
-    {
-        return [
-            $this->collectRequest($transaction->request),
-            $this->collectResponse($transaction->response),
-            $this->collectTime($transaction->transferInfo),
-        ];
     }
 
     private function collectRequest(RequestInterface $request)
@@ -164,5 +163,34 @@ class Guzzle5DataCollector
         $timing['total'] = $total;
 
         return $timing;
+    }
+
+    private function collectStackTrace(Transaction $transaction)
+    {
+        if (!isset($transaction->stackTrace)) {
+            return [];
+        }
+
+        $rootLen = strlen($this->projectRoot);
+        $stack = [];
+        foreach ($transaction->stackTrace as $frame) {
+            if (!empty($frame['class'])) {
+                if (strpos($frame['class'], 'Playbloom\Bundle\GuzzleBundle') === 0) {
+                    continue;
+                }
+            }
+            if (empty($frame['file'])) {
+                $frame['file'] = '';
+            } else if (strpos($frame['file'], $this->projectRoot) === 0) {
+                $frame['file'] = substr($frame['file'], $rootLen);
+            }
+
+            unset($frame['object']); // can't always be serialized
+            unset($frame['args']);   // can't always be serialized
+            unset($frame['type']);   // "->", "::', etc; not interested
+
+            $stack[] = $frame;
+        }
+        return $stack;
     }
 }

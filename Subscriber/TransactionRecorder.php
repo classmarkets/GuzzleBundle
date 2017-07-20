@@ -43,6 +43,7 @@ class TransactionRecorder implements SubscriberInterface
 
     private function add(Transaction $transaction)
     {
+        $transaction->stackTrace = debug_backtrace();
         $this->transactions[] = $transaction;
         if (count($this->transactions) > $this->limit) {
             array_shift($this->transactions);
@@ -54,6 +55,6 @@ class TransactionRecorder implements SubscriberInterface
      */
     public function getTransactions()
     {
-        return $this->transactions;
+        return array_values($this->transactions); // be zero based in case we array_shift'ed
     }
 }

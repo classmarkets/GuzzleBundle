@@ -17,6 +17,7 @@
 
         <service id="data_collector.guzzle_5" class="Playbloom\Bundle\GuzzleBundle\DataCollector\Guzzle5DataCollector">
             <argument type="service" id="playbloom_guzzlehttp.client.plugin.profiler"/>
+            <argument>%kernel.root_dir%</argument>
         </service>
     </services>
 
