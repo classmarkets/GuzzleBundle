@@ -93,18 +93,38 @@ class Guzzle5DataCollector
             ];
         }
 
+        if ($response instanceof \GuzzleHttp\Message\FutureResponse) {
+            try {
+                $response->wait();
+            } catch (\Exception $e) {
+                // wait() may throw an exception again that happend during
+                // response handling (such as in a custom response parser).
+                // There doesn't seem to be a way to get any information about
+                // the response in this case.
+                return [
+                    'statusCode' => '-',
+                    'reasonPhrase' => 'Exception',
+                    'headers' => [
+                        'Exception' => $e->getMessage(),
+                    ],
+                    'is_error' => true,
+                    'body' => '',
+                ];
+            }
+        }
+
         $responseBody = '';
         if ($body = $response->getBody()) {
             $responseBody = (string) $body;
         }
 
-        return array(
+        return [
             'statusCode'   => $response->getStatusCode(),
             'reasonPhrase' => $response->getReasonPhrase(),
             'headers'      => $response->getHeaders(),
             'is_error'     => $response->getStatusCode() >= 400,
             'body'         => $responseBody,
-        );
+        ];
     }
 
     private function collectTime(array $transferInfo)
