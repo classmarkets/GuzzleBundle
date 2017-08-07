@@ -10,6 +10,12 @@
             <th>Status</th>
             <td>{{ response.reasonPhrase }}</td>
         </tr>
+        {% if response.exception|default('') is not empty %}
+        <tr>
+            <th>Exception</th>
+            <td>{{ response.exception }}</td>
+        </tr>
+        {% endif %}
         </tbody>
     </table>
 

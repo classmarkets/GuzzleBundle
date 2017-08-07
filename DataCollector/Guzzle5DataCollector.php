@@ -104,9 +104,8 @@ class Guzzle5DataCollector
                 return [
                     'statusCode' => '-',
                     'reasonPhrase' => 'Exception',
-                    'headers' => [
-                        'Exception' => $e->getMessage(),
-                    ],
+                    'headers' => [],
+                    'exception' => $e->getMessage(),
                     'is_error' => true,
                     'body' => '',
                 ];
