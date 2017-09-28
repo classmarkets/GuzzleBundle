@@ -11,6 +11,8 @@
     {{ closing_char }}
 {%- endmacro %}
 
+{% import _self as m %}
+
 <div id="request_{{ index }}" class="tab-pane active">
     {% if time.total > 0 %}
 
@@ -97,7 +99,7 @@
                 <th>{{ name }}</th>
                 <td>
                     {% if parameter is iterable %}
-                        {{ _self.display_array_recursive(parameter) }}
+                        {{ m.display_array_recursive(parameter) }}
                     {% else %}
                         {{ parameter }}
                     {% endif %}
