@@ -87,4 +87,9 @@ class CompositeGuzzleDataCollector extends DataCollector
     {
         return isset($this->data['total_time']) ? $this->data['total_time'] : 0;
     }
+
+    public function reset()
+    {
+        $this->data = [];
+    }
 }
