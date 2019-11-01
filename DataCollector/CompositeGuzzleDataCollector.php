@@ -14,12 +14,9 @@ class CompositeGuzzleDataCollector extends DataCollector
     /** @var DataCollectorInterface[] */
     private $collectors;
 
-    public function __construct(Guzzle3DataCollector $guzzle3DataCollector, Guzzle5DataCollector $guzzle5DataCollector)
+    public function __construct(...$collectors)
     {
-        $this->collectors = [
-            $guzzle3DataCollector,
-            $guzzle5DataCollector
-        ];
+        $this->collectors = $collectors;
     }
 
     public function getName()
