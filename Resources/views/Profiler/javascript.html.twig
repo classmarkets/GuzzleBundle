@@ -1,35 +1,34 @@
-<script src="{{ asset('bundles/playbloomguzzle/vendor/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('bundles/playbloomguzzle/vendor/bootstrap/js/bootstrap-tab.min.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.9/ace.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.8/ace.js"></script>
 
 <script>
     !function() {
-        $('div.summary').click(function() {
-            $(this).next('div.details').slideToggle(100);
-        });
+        var formatLinks = document.querySelectorAll('a[class^=format-r-]');
+        for (var i = 0; i < formatLinks.length; i++) {
+            formatLinks[i].addEventListener('click', function(e) {
+                e.preventDefault();
+                var a = e.target;
 
-        $('a[class^=format-r-]').click(function(e) {
-            e.preventDefault();
-            var $a = $(e.target);
-            $($a.data('target')).each(function(_, codeBlock) {
-                var $this = $(codeBlock);
-                $this.css({
-                    left: 0,
-                    right: 0
-                });
+                var targets = document.querySelectorAll(a.dataset.target);
 
-                var editor = ace.edit($this.attr('id'));
+                for (var ii = 0; ii < targets.length; ii++) {
+                    var codeblock = targets[ii];
 
-                editor.setTheme("ace/theme/chrome");
-                editor.setReadOnly(true);
-                editor.setShowPrintMargin(false);
-                editor.setOptions({maxLines: 50});
+                    codeblock.style.left = 0;
+                    codeblock.style.right = 0;
 
-                if ($this.is('.json')) {
-                    editor.getSession().setMode("ace/mode/json");
-                    editor.getSession().setValue(JSON.stringify(JSON.parse(editor.getSession().getValue()), null, 4));
+                    var editor = ace.edit(codeblock.id);
+
+                    editor.setTheme('ace/theme/chrome');
+                    editor.setReadOnly(true);
+                    editor.setShowPrintMargin(false);
+                    editor.setOptions({maxLines: 50});
+
+                    if (codeblock.classList.contains('json')) {
+                        editor.getSession().setMode("ace/mode/json");
+                        editor.getSession().setValue(JSON.stringify(JSON.parse(editor.getSession().getValue()), null, 4));
+                    }
                 }
-            })
-        })
+            });
+        }
     }()
 </script>

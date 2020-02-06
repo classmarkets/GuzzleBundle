@@ -13,134 +13,132 @@
 
 {% import _self as m %}
 
-<div id="request_{{ index }}" class="tab-pane active">
-    {% if time.total > 0 %}
+{% if time.total > 0 %}
 
-        <h5>Time</h5>
-        <table>
-            <tbody class='guzzle-timing'>
-            {% for activity, timing in time if activity != 'total' %}
-                <tr>
-                    <th>
-                        {{ activity|title }} {{ (timing.duration * 1000)|number_format(0, '', '') }} <small>ms</small> - {{ timing.percentage|number_format(0, '', '') }}%
-                        {% if activity == 'waiting' %}
-                            <br/><small>Time to First Byte {{ (timing.end * 1000)|number_format(0) }} ms</small>
-                        {% endif %}
-                    </th>
-                    <td>
-                        <div class="progress progress-striped">
-                            <div class="progress-bar bar bar-invisible" style="width: {{ timing.start_percentage|number_format(2) }}%;"></div>
-                            <div class="progress-bar bar bar-{{ activity }}" style="width: {{ timing.percentage|number_format(2) }}%;"></div>
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-            <tr>
-                <th>Total {{ (time.total * 1000)|number_format(0) }} <small>ms</small></th>
-                <td></td>
-            </tr>
-            </tbody>
-        </table>
-    {% endif %}
-
-    <h5>Information</h5>
+    <h3>Time</h3>
     <table>
-        <tbody>
-        <tr>
-            <th>Method</th>
-            <td>{{ request.method }}</td>
-        </tr>
-        <tr>
-            <th>Protocol</th>
-            <td>{{ request.scheme }}</td>
-        </tr>
-        <tr>
-            <th>Host</th>
-            <td>{{ request.host }}</td>
-        </tr>
-        <tr>
-            <th>Port</th>
-            <td>{{ request.port }}</td>
-        </tr>
-        <tr>
-            <th>Path</th>
-            <td>{{ request.path }}</td>
-        </tr>
-        <tr>
-            <th>Query</th>
-            <td>{{ request.query }}</td>
-        </tr>
-        {% if request.method == 'GET' %}
+        <tbody class='guzzle-timing'>
+        {% for activity, timing in time if activity != 'total' %}
             <tr>
-                <th>URL</th>
-                <td><a href="{{ request.scheme }}://{{ request.host }}:{{ request.port }}{{ request.path }}?{{ request.query }}">{{ request.scheme }}://{{ request.host }}{{ request.path }}?{{ request.query }}</a></td>
-            </tr>
-        {% endif %}
-        </tbody>
-    </table>
-
-    <h5>Headers</h5>
-    <table>
-        <tbody>
-        {% for header,value in request.headers %}
-            <tr>
-                <th>{{ header }}</th>
-                <td>{{ value|join('<strong>, </strong>') }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <h5>Query Parameters</h5>
-    <table>
-        <tbody>
-        {% for name,parameter in request.query %}
-            <tr>
-                <th>{{ name }}</th>
-                <td>
-                    {% if parameter is iterable %}
-                        {{ m.display_array_recursive(parameter) }}
-                    {% else %}
-                        {{ parameter }}
+                <th>
+                    {{ activity|title }} {{ (timing.duration * 1000)|number_format(0, '', '') }} <small>ms</small> - {{ timing.percentage|number_format(0, '', '') }}%
+                    {% if activity == 'waiting' %}
+                        <br /><small>Time to First Byte {{ (timing.end * 1000)|number_format(0) }} ms</small>
                     {% endif %}
+                </th>
+                <td>
+                    <div class="progress progress-striped">
+                        <div class="progress-bar bar bar-invisible" style="width: {{ timing.start_percentage|number_format(2) }}%;"></div>
+                        <div class="progress-bar bar bar-{{ activity }}" style="width: {{ timing.percentage|number_format(2) }}%;"></div>
+                    </div>
                 </td>
             </tr>
         {% endfor %}
+        <tr>
+            <th>Total {{ (time.total * 1000)|number_format(0) }} <small>ms</small></th>
+            <td></td>
+        </tr>
         </tbody>
     </table>
+{% endif %}
+
+<h3>Information</h3>
+<table>
+    <tbody>
+    <tr>
+        <th>Method</th>
+        <td>{{ request.method }}</td>
+    </tr>
+    <tr>
+        <th>Protocol</th>
+        <td>{{ request.scheme }}</td>
+    </tr>
+    <tr>
+        <th>Host</th>
+        <td>{{ request.host }}</td>
+    </tr>
+    <tr>
+        <th>Port</th>
+        <td>{{ request.port }}</td>
+    </tr>
+    <tr>
+        <th>Path</th>
+        <td>{{ request.path }}</td>
+    </tr>
+    <tr>
+        <th>Query</th>
+        <td>{{ request.query }}</td>
+    </tr>
+    {% if request.method == 'GET' %}
+        <tr>
+            <th>URL</th>
+            <td><a href="{{ request.scheme }}://{{ request.host }}:{{ request.port }}{{ request.path }}?{{ request.query }}">{{ request.scheme }}://{{ request.host }}{{ request.path }}?{{ request.query }}</a></td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>
+
+<h3>Headers</h3>
+<table>
+    <tbody>
+    {% for header,value in request.headers %}
+        <tr>
+            <th>{{ header }}</th>
+            <td>{{ value|join('<strong>, </strong>') }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h3>Query Parameters</h3>
+<table>
+    <tbody>
+    {% for name,parameter in request.query %}
+        <tr>
+            <th>{{ name }}</th>
+            <td>
+                {% if parameter is iterable %}
+                    {{ m.display_array_recursive(parameter) }}
+                {% else %}
+                    {{ parameter }}
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 
-    {% if request.body is not empty %}
-        {% set request_id = random(1000000) %}
+{% if request.body is not empty %}
+    {% set request_id = random(1000000) %}
 
-        {% if request.headers['Content-Type'][0] is defined %}
-          {% set content_type = request.headers['Content-Type'][0] %}
-        {% elseif request.headers['content-type'][0] is defined %}
-          {% set content_type = request.headers['content-type'][0] %}
-        {% elseif request.headers['content-type'] is defined %}
-          {% set content_type = request.headers['content-type'] ~ '' %}
-        {% else %}
-          {% set content_type = '' %}
-        {% endif %}
-
-        {% set is_json_request = ('application/json' == content_type[0:16]) %}
-        <h5>Content <a class="format-r-{{ request_id }}" data-target="#r-{{ request_id }}" href="#">Format</a></h5>
-        <pre id='r-{{ request_id }}' class="{{ is_json_request ? 'json' }}">{{ request.body }}</pre>
+    {% if request.headers['Content-Type'][0] is defined %}
+      {% set content_type = request.headers['Content-Type'][0] %}
+    {% elseif request.headers['content-type'][0] is defined %}
+      {% set content_type = request.headers['content-type'][0] %}
+    {% elseif request.headers['content-type'] is defined %}
+      {% set content_type = request.headers['content-type'] ~ '' %}
+    {% else %}
+      {% set content_type = '' %}
     {% endif %}
 
-    {% if trace is not empty %}
-    <h5>Stack Trace</h5>
-    <details>
-        <summary>Show</summary>
-        <table style='font-family: monospace; white-space: nowrap;'>
-          <tr><th>Function / Method</th><th>called in</th></tr>
-          {% for frame in trace %}
-            <tr>
-              <td>{% if frame['class'] is defined %}{{ frame['class'] }}::{% endif %}{{ frame['function']|default('') }}</td>
-              <td>{{ frame['file']|default('') }}:{{ frame['line']|default(0) }}</td>
-            </tr>
-          {% endfor %}
-        </table>
-    </details>
-    {% endif %}
-</div>
+    {% set is_json_request = ('application/json' == content_type[0:16]) %}
+    <h5>Content <a class="format-r-{{ request_id }} format-r" data-target="#r-{{ request_id }}" href="#">Format</a></h5>
+    <pre id='r-{{ request_id }}' class="{{ is_json_request ? 'json' }}">{{ request.body }}</pre>
+{% endif %}
+
+{% if trace is not empty %}
+<h3>Stack Trace</h3>
+<details>
+    <summary>Show</summary>
+    <table style='font-family: monospace; white-space: nowrap;'>
+      <tr><th>Function / Method</th><th>called in</th></tr>
+      {% for frame in trace %}
+        <tr>
+          <td>{% if frame['class'] is defined %}{{ frame['class'] }}::{% endif %}{{ frame['function']|default('') }}</td>
+          <td>{{ frame['file']|default('') }}:{{ frame['line']|default(0) }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+</details>
+{% endif %}

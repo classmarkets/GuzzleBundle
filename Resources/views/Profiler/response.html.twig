@@ -1,51 +1,49 @@
-<div id="response_{{ index }}" class="tab-pane">
-    <h5>Information bar</h5>
-    <table>
-        <tbody>
-        <tr>
-            <th>Code</th>
-            <td>{{ response.statusCode }}</td>
-        </tr>
-        <tr>
-            <th>Status</th>
-            <td>{{ response.reasonPhrase }}</td>
-        </tr>
-        {% if response.exception|default('') is not empty %}
-        <tr>
-            <th>Exception</th>
-            <td>{{ response.exception }}</td>
-        </tr>
-        {% endif %}
-        </tbody>
-    </table>
-
-    <h5>Headers</h5>
-    <table>
-        <tbody>
-        {% for header,value in response.headers %}
-            <tr>
-                <th>{{ header }}</th>
-                <td>
-                    {{ value|join(', ') }}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    {% set response_id = random(1000000) %}
-
-    {% if response.headers['Content-Type'][0] is defined %}
-      {% set content_type = response.headers['Content-Type'][0] %}
-    {% elseif response.headers['content-type'][0] is defined %}
-      {% set content_type = response.headers['content-type'][0] %}
-    {% elseif response.headers['content-type'] is defined  %}
-      {% set content_type = response.headers['content-type'] ~ '' %}
-    {% else %}
-      {% set content_type = '' %}
+<h3>Information bar</h3>
+<table>
+    <tbody>
+    <tr>
+        <th>Code</th>
+        <td>{{ response.statusCode }}</td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td>{{ response.reasonPhrase }}</td>
+    </tr>
+    {% if response.exception|default('') is not empty %}
+    <tr>
+        <th>Exception</th>
+        <td>{{ response.exception }}</td>
+    </tr>
     {% endif %}
+    </tbody>
+</table>
 
-    {% set is_json_response = ('application/json' == content_type[0:16]) %}
-    <h5>Content <a class="format-r-{{ response_id }}" data-target="#r-{{ response_id }}" href="#">Format</a></h5>
-    <pre id='r-{{ response_id }}' class='{{ is_json_response ? 'json' }}'>{{ response.body }}</pre>
-</div>
+<h3>Headers</h3>
+<table>
+    <tbody>
+    {% for header,value in response.headers %}
+        <tr>
+            <th>{{ header }}</th>
+            <td>
+                {{ value|join(', ') }}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% set response_id = random(1000000) %}
+
+{% if response.headers['Content-Type'][0] is defined %}
+    {% set content_type = response.headers['Content-Type'][0] %}
+{% elseif response.headers['content-type'][0] is defined %}
+    {% set content_type = response.headers['content-type'][0] %}
+{% elseif response.headers['content-type'] is defined  %}
+    {% set content_type = response.headers['content-type'] ~ '' %}
+{% else %}
+    {% set content_type = '' %}
+{% endif %}
+
+{% set is_json_response = ('application/json' == content_type[0:16]) %}
+<h3>Content <a class="format-r-{{ response_id }} format-r" data-target="#r-{{ response_id }}" href="#">Format</a></h3>
+<pre id='r-{{ response_id }}' class='{{ is_json_response ? 'json' }}'>{{ response.body }}</pre>
