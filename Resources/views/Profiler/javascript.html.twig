@@ -2,23 +2,22 @@
 
 <script>
     !function() {
-        var formatLinks = document.querySelectorAll('a[class^=format-r-]');
-        for (var i = 0; i < formatLinks.length; i++) {
-            formatLinks[i].addEventListener('click', function(e) {
+        document.querySelectorAll('a[class^=format-r-]').forEach(function(a) {
+            a.addEventListener('click', function(e) {
                 e.preventDefault();
-                var a = e.target;
 
-                var targets = document.querySelectorAll(a.dataset.target);
-
-                for (var ii = 0; ii < targets.length; ii++) {
-                    var codeblock = targets[ii];
-
+                document.querySelectorAll(a.dataset.target).forEach(function(codeblock) {
                     codeblock.style.left = 0;
                     codeblock.style.right = 0;
 
-                    var editor = ace.edit(codeblock.id);
+                    let editor = ace.edit(codeblock.id);
 
-                    editor.setTheme('ace/theme/chrome');
+                    if (document.body.classList.contains('theme-dark')) {
+                        editor.setTheme('ace/theme/monokai');
+                    } else {
+                        editor.setTheme('ace/theme/chrome');
+                    }
+
                     editor.setReadOnly(true);
                     editor.setShowPrintMargin(false);
                     editor.setOptions({maxLines: 50});
@@ -27,8 +26,10 @@
                         editor.getSession().setMode("ace/mode/json");
                         editor.getSession().setValue(JSON.stringify(JSON.parse(editor.getSession().getValue()), null, 4));
                     }
-                }
+
+                    a.remove();
+                });
             });
-        }
+        });
     }()
 </script>

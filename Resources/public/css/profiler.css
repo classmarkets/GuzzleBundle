@@ -164,7 +164,6 @@ div.request h5 {
 }
 
 div.guzzle div.request pre, div.guzzle div.request code {
-    color: #333;
     font-size: 13px;
     font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 }
@@ -173,7 +172,6 @@ div.guzzle div.request pre {
     padding: 9.5px;
     margin: 0 0 10px;
     font-size: 13px;
-    background-color: whiteSmoke;
     white-space: pre;
     white-space: pre-wrap;
     border: 1px solid #CCC;
