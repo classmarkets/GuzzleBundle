@@ -8,7 +8,7 @@
         <service id="data_collector.guzzle" class="Playbloom\Bundle\GuzzleBundle\DataCollector\CompositeGuzzleDataCollector">
             <argument type="service" id="data_collector.guzzle_3"/>
             <argument type="service" id="data_collector.guzzle_5"/>
-            <tag name="data_collector" template="PlaybloomGuzzleBundle:Collector:guzzle" id="guzzle"/>
+            <tag name="data_collector" template="@PlaybloomGuzzle/Collector/guzzle" id="guzzle"/>
         </service>
 
         <service id="data_collector.guzzle_3" class="Playbloom\Bundle\GuzzleBundle\DataCollector\Guzzle3DataCollector">
