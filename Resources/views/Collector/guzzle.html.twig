@@ -1,4 +1,4 @@
-{% extends 'WebProfilerBundle:Profiler:layout.html.twig' %}
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
 
 {% block toolbar %}
     {% if collector.calls is empty %}
@@ -34,7 +34,7 @@
         </div>
     {% endset %}
 
-    {% include 'WebProfilerBundle:Profiler:toolbar_item.html.twig' with { 'link': 'guzzle' } %}
+    {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': 'guzzle' } %}
 {% endblock %}
 
 {% block menu %}
@@ -62,5 +62,5 @@
 {% block panel %}
     <h2>{{ (collector.name|capitalize)|default('HTTP calls') }}</h2>
 
-    {% include 'PlaybloomGuzzleBundle:Profiler:calls.html.twig' with {'calls': collector.calls } %}
+    {% include '@PlaybloomGuzzle/Profiler/calls.html.twig' with {'calls': collector.calls } %}
 {% endblock %}

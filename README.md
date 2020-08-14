@@ -83,7 +83,7 @@ First, define your own `GithubDataCollector` extending the `Playbloom\Bundle\Guz
 
 Then extends the guzzle web profiler template
 ```twig
-{% extends 'PlaybloomGuzzleBundle:Collector:guzzle.html.twig' %}
+{% extends '@PlaybloomGuzzle/Collector/guzzle.html.twig' %}
 
 {% block panel %}
     <div class="github">
@@ -94,7 +94,7 @@ Then extends the guzzle web profiler template
         </ul>
     </div>
 
-    {% include 'PlaybloomGuzzleBundle:Profiler:requests.html.twig' with {'requests': collector.requests } %}
+    {% include '@PlaybloomGuzzle/Profiler/requests.html.twig' with {'requests': collector.requests } %}
 {% endblock %}
 ```
 
@@ -103,7 +103,7 @@ And finally declare your data collector
 <service id="data_collector.github" class="Acme\GithubBundle\DataCollector\GithubDataCollector">
     <argument type="service" id="playbloom_guzzle.client.plugin.profiler"/>
     <tag name="data_collector"
-        template="AcmeGithubBundle:Collector:github"
+        template="@AcmeGithub/Collector/github"
         id="github"/>
 </service>
 ```
