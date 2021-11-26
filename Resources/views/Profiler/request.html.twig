@@ -14,27 +14,24 @@
 {% import _self as m %}
 
 {% if time.total > 0 %}
-
     <h3>Time</h3>
     <table>
         <tbody class='guzzle-timing'>
-        {% for activity, timing in time %}
-            {% if activity != 'total' %}
-                <tr>
-                    <th>
-                        {{ activity|title }} {{ (timing.duration * 1000)|number_format(0, '', '') }}&nbsp;<small>ms</small> - {{ timing.percentage|number_format(0, '', '') }}%
-                        {% if activity == 'waiting' %}
-                            <br /><small>Time to First Byte {{ (timing.end * 1000)|number_format(0) }}&nbsp;ms</small>
-                        {% endif %}
-                    </th>
-                    <td>
-                        <div class="progress progress-striped">
-                            <div class="progress-bar bar bar-invisible" style="width: {{ timing.start_percentage|number_format(2) }}%;"></div>
-                            <div class="progress-bar bar bar-{{ activity }}" style="width: {{ timing.percentage|number_format(2) }}%;"></div>
-                        </div>
-                    </td>
-                </tr>
-            {% endif %}
+        {% for activity, timing in time|filter((timing, activity) => activity != 'total') %}
+            <tr>
+                <th>
+                    {{ activity|title }} {{ (timing.duration * 1000)|number_format(0, '', '') }} <small>ms</small> - {{ timing.percentage|number_format(0, '', '') }}%
+                    {% if activity == 'waiting' %}
+                        <br /><small>Time to First Byte {{ (timing.end * 1000)|number_format(0) }} ms</small>
+                    {% endif %}
+                </th>
+                <td>
+                    <div class="progress progress-striped">
+                        <div class="progress-bar bar bar-invisible" style="width: {{ timing.start_percentage|number_format(2) }}%;"></div>
+                        <div class="progress-bar bar bar-{{ activity }}" style="width: {{ timing.percentage|number_format(2) }}%;"></div>
+                    </div>
+                </td>
+            </tr>
         {% endfor %}
         <tr>
             <th>Total {{ (time.total * 1000)|number_format(0) }}&nbsp;<small>ms</small></th>
