@@ -36,7 +36,7 @@ class CompositeGuzzleDataCollector extends DataCollector
         foreach ($this->collectors as $collector) {
             $data = $collector->collect($request, $response, $exception);
             foreach ($data['methods'] as $method => $methodCounter) {
-                if (array_key_exists($method, $allData) == false) {
+                if (array_key_exists($method, $allData) === false) {
                     $allData['methods'][$method] = 0;
                 }
                 $allData['methods'][$method] += $methodCounter;
