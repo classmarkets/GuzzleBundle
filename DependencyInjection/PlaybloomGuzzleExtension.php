@@ -27,7 +27,7 @@ class PlaybloomGuzzleExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $hasGuzzle3 = class_exists('\Guzzle\Http\Client');
-        $hasGuzzle5 = class_exists('\GuzzleHttp\Client');
+        $hasGuzzle5 = class_exists('\GuzzleHttp\Client') && class_exists('\GuzzleHttp\Collection');
 
         if ($hasGuzzle3) {
             $logPlugin = $container->register('playbloom_guzzle.client.plugin.logger');
