@@ -2,7 +2,7 @@
 
 namespace Playbloom\Bundle\GuzzleBundle\DataCollector;
 
-use Exception;
+use Throwable;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +24,7 @@ class CompositeGuzzleDataCollector extends DataCollector
         return 'guzzle';
     }
 
-    public function collect(Request $request, Response $response, Exception $exception = null)
+    public function collect(Request $request, Response $response, Throwable $exception = null)
     {
         $allData = [
             'total_time'  => 0,
