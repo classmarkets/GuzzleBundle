@@ -1,0 +1,257 @@
+div.guzzle div.request {
+    margin-bottom: 10px;
+}
+
+div.guzzle div.request div.status {
+    float: left;
+    width: 24px;
+    height: 18px;
+    margin-top: 6px;
+}
+
+div.guzzle div.request div.status svg {
+  height: 16px;
+  max-width: 16px;
+}
+
+div.guzzle div.request div.status.success {
+    color: #d1d1d1;
+}
+
+div.guzzle div.request div.status.error {
+    color: #A41E22;
+}
+
+div.guzzle div.request div.summary {
+    font-family: sans-serif;
+    display: block;
+    float: none;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    border: 1px solid;
+    cursor: pointer;
+}
+
+div.guzzle div.request.post div.summary {
+    background-color: #E7F6EC;
+    border-color: #C3E8D1;
+    color: #10A54A;
+}
+
+div.guzzle div.request.get div.summary {
+    background-color: #E7F0F7;
+    border-color: #C3D9EC;
+    color: #0F6AB4;
+}
+
+div.guzzle div.request.put div.summary {
+    background-color: #F9F2E9;
+    border-color: #F0E0CA;
+    color: #C5862B;
+}
+
+div.guzzle div.request.delete div.summary {
+    background-color: #F5E8E8;
+    border-color: #E8C6C7;
+    color: #A41E22;
+}
+
+div.guzzle div.request div.summary h3 {
+    float: left;
+    font-weight: normal;
+    line-height: 1.1em;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+}
+
+div.guzzle div.request div.summary div.code {
+    display: block;
+    float: right;
+    margin: 6px 10px 0 0;
+    font-size: small;
+}
+
+div.guzzle div.request div.summary h3 > span.method {
+    text-transform: uppercase;
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+    width: 50px;
+    font-size: 0.9em;
+    text-align: center;
+    margin: 0;
+    padding: 7px 0 4px 0;
+    border-radius: 2px;
+}
+
+div.guzzle div.request div.summary > div.cache-hit {
+    float: right;
+    font-size: small;
+    margin-top: 6px;
+    margin-right: 5px;
+}
+
+div.guzzle div.request.post div.summary h3 > span.method {
+    background-color: #10a54a;
+}
+
+div.guzzle div.request.get div.summary h3 > span.method {
+    background-color: #0F6AB4;
+}
+
+div.guzzle div.request.put div.summary h3 > span.method {
+    background-color: #C5862B;
+}
+
+div.guzzle div.request.delete div.summary h3 > span.method {
+    background-color: #0F6AB4;
+}
+
+div.guzzle div.request div.summary h3 > span.path {
+    margin: 0;
+    padding: 10px 0 0 0;
+    color: black;
+}
+
+div.guzzle .details {
+    margin-top: 20px;
+}
+
+div.guzzle div.request div.details {
+    padding: 0;
+}
+
+div.guzzle div.request div.details .nav {
+    margin-bottom: 5px;
+}
+
+div.guzzle div.request div.details .nav li > a {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+div.guzzle div.request div.details .nav li.active > a {
+    font-weight: bold;
+}
+
+div.request h5 {
+    text-align: left;
+    font-size: 1.1em;
+    text-transform: lowercase;
+    font-variant: small-caps;
+    font-weight: bold;
+}
+
+div.guzzle div.request pre, div.guzzle div.request code {
+    font-size: 13px;
+    font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+}
+
+div.guzzle div.request pre {
+    padding: 9.5px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    white-space: pre-wrap;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+div.guzzle div.request pre.prettyprint {
+    margin-bottom: 20px;
+}
+
+div.guzzle details summary {
+    cursor: pointer;
+}
+
+div.guzzle .format-r {
+    font-size: 14px;
+}
+
+/* Bootstrap progress bar */
+.progress {
+    height: 20px;
+    overflow: hidden;
+    margin: 0;
+    background-color: #F7F7F7;
+    background-image: linear-gradient(to bottom, whiteSmoke, #F9F9F9);
+    background-repeat: repeat-x;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.progress .bar {
+    float: left;
+    width: 0;
+    margin: 0;
+    height: 100%;
+    font-size: 14px;
+    font-weight: light;
+    color: white;
+    text-align: center;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #337AB7;
+    background-image: linear-gradient(to bottom, #149BDF, #0480BE);
+    background-repeat: repeat-x;
+    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    transition: width 0.6s ease;
+}
+
+.progress-striped .bar {
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+    background-size: 40px 40px;
+}
+
+.progress .bar + .bar {
+    box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.progress-warning .bar, .progress .bar-warning {
+    background-color: #FAA732;
+    background-image: linear-gradient(to bottom, #FBB450, #F89406);
+    background-repeat: repeat-x;
+}
+
+.progress-warning.progress-striped .bar, .progress-striped .bar-warning {
+    background-color: #FBB450;
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+}
+
+.progress-success .bar, .progress .bar-success {
+    background-color: #5EB95E;
+    background-image: linear-gradient(to bottom, #62C462, #57A957);
+    background-repeat: repeat-x;
+}
+
+.progress-success.progress-striped .bar, .progress-striped .bar-success {
+    background-color: #62C462;
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+}
+
+.progress .bar-invisible {
+   background: transparent;
+   box-shadow: none;
+}
+.progress .bar-resolving {
+    background-color: #7762C4;
+}
+.progress .bar-negotiating {
+    background-color: #5BC0DE;
+}
+.progress .bar-waiting {
+    background-color: #F0AD4E;
+}
+.progress .bar-processing {
+    background-color: #62C462;
+}
+.guzzle-timing td {
+   width: 100%;
+}
+.guzzle-timing th {
+   white-space: nowrap;
+}

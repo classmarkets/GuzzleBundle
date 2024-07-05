@@ -1,5 +1,11 @@
 <div id="call_{{ index }}" class="request {{ call.request.method|lower }}">
-    <div class="status icon {% if call.error %}error{% else %}success{% endif %}"></div>
+    <div class="status icon {% if call.error %}error{% else %}success{% endif %}">
+        {% if call.error %}
+            {{ source('@PlaybloomGuzzle/Icon/warning.svg') }}
+        {% else %}
+            {{ source('@PlaybloomGuzzle/Icon/check.svg') }}
+        {% endif %}
+    </div>
 
     <div class="summary sf-toggle" data-toggle-selector="#call_details_{{ index }}">
         <h3>
