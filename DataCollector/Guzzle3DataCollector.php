@@ -2,35 +2,31 @@
 
 namespace Playbloom\Bundle\GuzzleBundle\DataCollector;
 
+use Guzzle\Http\Message\EntityEnclosingRequestInterface;
 use Guzzle\Http\Message\Header;
 use Guzzle\Http\Message\Header\HeaderCollection;
-use Guzzle\Plugin\History\HistoryPlugin;
-
 use Guzzle\Http\Message\RequestInterface as GuzzleRequestInterface;
+use Guzzle\Plugin\History\HistoryPlugin;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Guzzle\Http\Message\EntityEnclosingRequestInterface;
 
 class Guzzle3DataCollector
 {
-    private $profiler;
+    private HistoryPlugin $profiler;
 
     public function __construct(HistoryPlugin $profiler)
     {
         $this->profiler = $profiler;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function collect(Request $request, Response $response, \Throwable $exception = null)
+    public function collect(Request $request, Response $response, ?\Throwable $exception = null): array
     {
-        $data = array(
-            'calls'       => array(),
+        $data = [
+            'calls'       => [],
             'error_count' => 0,
-            'methods'     => array(),
+            'methods'     => [],
             'total_time'  => 0,
-        );
+        ];
 
         /**
          * Aggregates global metrics about Guzzle usage
@@ -38,7 +34,7 @@ class Guzzle3DataCollector
          * @param array $request
          * @param array $response
          * @param array $time
-         * @param bool  $error
+         * @param bool $error
          */
         $aggregate = function ($request, $response, $time, $error) use (&$data) {
 
@@ -49,7 +45,7 @@ class Guzzle3DataCollector
 
             $data['methods'][$method]++;
             $data['total_time'] += $time['total'];
-            $data['error_count'] += (int) $error;
+            $data['error_count'] += (int)$error;
         };
 
         foreach ($this->profiler as $call) {
@@ -69,13 +65,13 @@ class Guzzle3DataCollector
                 $wasCached = $cacheHeader->hasValue('HIT from GuzzleCache');
             }
 
-            $data['calls'][] = array(
-                'request' => $request,
+            $data['calls'][] = [
+                'request'  => $request,
                 'response' => $response,
-                'time' => $time,
-                'error' => $error,
-                'cached' => $wasCached,
-            );
+                'time'     => $time,
+                'error'    => $error,
+                'cached'   => $wasCached,
+            ];
         }
 
         return $data;
@@ -84,82 +80,76 @@ class Guzzle3DataCollector
     /**
      * Collect & sanitize data about a Guzzle request
      *
-     * @param \Guzzle\Http\Message\RequestInterface $request
      *
-     * @return array
      */
-    private function collectRequest(GuzzleRequestInterface $request)
+    private function collectRequest(GuzzleRequestInterface $request): array
     {
         $body = null;
         if ($request instanceof EntityEnclosingRequestInterface) {
-            $body = (string) $request->getBody();
+            $body = (string)$request->getBody();
         }
 
-        return array(
+        return [
             'headers' => $request->getHeaders(),
-            'method'  => $request->getMethod(),
-            'scheme'  => $request->getScheme(),
-            'host'    => $request->getHost(),
-            'port'    => $request->getPort(),
-            'path'    => $request->getPath(),
-            'query'   => $request->getQuery(),
-            'body'    => $body
-        );
+            'method' => $request->getMethod(),
+            'scheme' => $request->getScheme(),
+            'host' => $request->getHost(),
+            'port' => $request->getPort(),
+            'path' => $request->getPath(),
+            'query' => $request->getQuery(),
+            'body' => $body,
+        ];
     }
 
     /**
      * Collect & sanitize data about a Guzzle response
      *
-     * @param \Guzzle\Http\Message\RequestInterface $request
      *
-     * @return array
      */
-    private function collectResponse(GuzzleRequestInterface $request)
+    private function collectResponse(GuzzleRequestInterface $request): array
     {
         $response = $request->getResponse();
         $body = $response->getBody(true);
 
-        return array(
-            'statusCode'   => $response->getStatusCode(),
+        return [
+            'statusCode' => $response->getStatusCode(),
             'reasonPhrase' => $response->getReasonPhrase(),
-            'headers'      => $response->getHeaders(),
-            'body'         => $body
-        );
+            'headers' => $response->getHeaders(),
+            'body' => $body,
+        ];
     }
 
     /**
      * Collect time for a Guzzle request
      *
-     * @param \Guzzle\Http\Message\RequestInterface $request
      *
-     * @return array
      */
-    private function collectTime(GuzzleRequestInterface $request)
+    private function collectTime(GuzzleRequestInterface $request): array
     {
         $response = $request->getResponse();
 
-        $timing = array(
-            'resolving' => array(
+        $timing = [
+            'resolving' => [
                 'start' => 0,
                 'end' => $response->getInfo('namelookup_time'),
-            ),
-            'connecting' => array(
+            ],
+            'connecting' => [
                 'start' => $response->getInfo('namelookup_time'),
                 'end' => $response->getInfo('connect_time'),
-            ),
-            'negotiating' => array(
+            ],
+            'negotiating' => [
                 'start' => $response->getInfo('connect_time'),
                 'end' => $response->getInfo('pretransfer_time'),
-            ),
-            'waiting' =>  array(
+            ],
+            'waiting' => [
                 'start' => $response->getInfo('pretransfer_time'),
                 'end' => $response->getInfo('starttransfer_time'),
-            ),
-            'processing' =>  array(
+            ],
+            'processing' => [
                 'start' => $response->getInfo('starttransfer_time'),
                 'end' => $response->getInfo('total_time'),
-            ),
-        );
+            ],
+        ];
 
         $total = $response->getInfo('total_time');
 

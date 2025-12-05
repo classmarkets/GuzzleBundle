@@ -2,8 +2,8 @@
 
 namespace Playbloom\Bundle\GuzzleBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -16,10 +16,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class ClientPluginPass implements CompilerPassInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $clients = $container->findTaggedServiceIds('playbloom_guzzle.client');
 
@@ -37,7 +34,7 @@ class ClientPluginPass implements CompilerPassInterface
             if ($container->hasDefinition('profiler')) {
                 $clientDefinition->addMethodCall(
                     'addSubscriber',
-                    array(new Reference('playbloom_guzzle.client.plugin.profiler'))
+                    [new Reference('playbloom_guzzle.client.plugin.profiler')]
                 );
             }
         }
@@ -47,14 +44,14 @@ class ClientPluginPass implements CompilerPassInterface
      * Register plugin for a client
      *
      * @param Definition $clientDefinition
-     * @param array      $plugins
+     * @param array $plugins
      */
-    private function registerGuzzlePlugin(Definition $clientDefinition, array $plugins)
+    private function registerGuzzlePlugin(Definition $clientDefinition, array $plugins): void
     {
         foreach ($plugins as $pluginId => $attributes) {
             $clientDefinition->addMethodCall(
                 'addSubscriber',
-                array(new Reference($pluginId))
+                [new Reference($pluginId)]
             );
         }
     }

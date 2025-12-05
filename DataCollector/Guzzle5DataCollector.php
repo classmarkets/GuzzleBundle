@@ -12,10 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 class Guzzle5DataCollector
 {
     /** @var TransactionRecorder */
-    private $transactionRecorder;
+    private TransactionRecorder $transactionRecorder;
 
     /** @var string Name of the project root directory. Will be stripped from stack traces */
-    private $projectRoot;
+    private string $projectRoot;
 
     public function __construct(TransactionRecorder $guzzle5Profiler, $kernelRoot)
     {
@@ -23,7 +23,7 @@ class Guzzle5DataCollector
         $this->projectRoot = dirname($kernelRoot) . DIRECTORY_SEPARATOR;
     }
 
-    public function collect(Request $request, Response $response, \Throwable $exception = null)
+    public function collect(Request $request, Response $response, ?\Throwable $exception = null): array
     {
         $data = [
             'calls'       => [],
@@ -62,14 +62,14 @@ class Guzzle5DataCollector
         return $data;
     }
 
-    private function collectRequest(RequestInterface $request)
+    private function collectRequest(RequestInterface $request): array
     {
         $requestBody = '';
         if ($body = $request->getBody()) {
             $requestBody = (string) $body;
         }
 
-        return array(
+        return [
             'headers' => $request->getHeaders(),
             'method'  => $request->getMethod(),
             'scheme'  => $request->getScheme(),
@@ -78,10 +78,10 @@ class Guzzle5DataCollector
             'path'    => $request->getPath(),
             'query'   => new Guzzle5Query($request->getQuery()),
             'body'    => $requestBody,
-        );
+        ];
     }
 
-    private function collectResponse(ResponseInterface $response = null)
+    private function collectResponse(ResponseInterface $response = null): array
     {
         if ($response === null) {
             return [
@@ -126,7 +126,7 @@ class Guzzle5DataCollector
         ];
     }
 
-    private function collectTime(array $transferInfo)
+    private function collectTime(array $transferInfo): array
     {
         $timing = array();
         if (isset($transferInfo['namelookup_time'])) {
@@ -184,23 +184,23 @@ class Guzzle5DataCollector
         return $timing;
     }
 
-    private function collectStackTrace(Transaction $transaction)
+    private function collectStackTrace(Transaction $transaction): array
     {
-        if (!isset($transaction->stackTrace)) {
+        if (!isset($transaction->transferInfo['stackTrace'])) {
             return [];
         }
 
         $rootLen = strlen($this->projectRoot);
         $stack = [];
-        foreach ($transaction->stackTrace as $frame) {
+        foreach ($transaction->transferInfo['stackTrace'] as $frame) {
             if (!empty($frame['class'])) {
-                if (strpos($frame['class'], 'Playbloom\Bundle\GuzzleBundle') === 0) {
+                if (str_starts_with($frame['class'], 'Playbloom\Bundle\GuzzleBundle')) {
                     continue;
                 }
             }
             if (empty($frame['file'])) {
                 $frame['file'] = '';
-            } else if (strpos($frame['file'], $this->projectRoot) === 0) {
+            } else if (str_starts_with($frame['file'], $this->projectRoot)) {
                 $frame['file'] = substr($frame['file'], $rootLen);
             }
 

@@ -2,40 +2,53 @@
 
 namespace Playbloom\Bundle\GuzzleBundle\Tests\DataCollector;
 
-use Playbloom\Bundle\GuzzleBundle\DataCollector\Guzzle3DataCollector;
+use PHPUnit\Framework\TestCase;
 use Guzzle\Plugin\History\HistoryPlugin;
+use Playbloom\Bundle\GuzzleBundle\DataCollector\Guzzle3DataCollector;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Guzzle DataCollector unit test
  *
  * @author Ludovic Fleury <ludo.fleury@gmail.com>
  */
-class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
+class Guzzle3DataCollectorTest extends TestCase
 {
-    public function testGetName()
+    public function testGetName(): void
     {
         $guzzleDataCollector = $this->createGuzzleCollector();
 
-        $this->assertEquals($guzzleDataCollector->getName(), 'guzzle');
+        self::assertEquals('guzzle', $guzzleDataCollector->getName());
     }
 
     /**
      * Test an empty GuzzleDataCollector
      */
-    public function testCollectEmpty()
+    public function testCollectEmpty(): void
     {
         // test an empty collector
         $guzzleDataCollector = $this->createGuzzleCollector();
 
-        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
-        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
+        $request = $this->createMock(Request::class);
+        $response = $this->createMock(Response::class);
         $guzzleDataCollector->collect($request, $response);
 
-        $this->assertEquals($guzzleDataCollector->getCalls(), array());
-        $this->assertEquals($guzzleDataCollector->countErrors(), 0);
-        $this->assertEquals($guzzleDataCollector->getMethods(), array());
-        $this->assertEquals($guzzleDataCollector->getTotalTime(), 0);
+        self::assertEquals([], $guzzleDataCollector->getCalls());
+        self::assertEquals(0, $guzzleDataCollector->countErrors());
+        self::assertEquals([], $guzzleDataCollector->getMethods());
+        self::assertEquals(0, $guzzleDataCollector->getTotalTime());
     }
+
+    private function createGuzzleCollector(array $calls = [])//: Guzzle3DataCollector
+    {
+        $historyPlugin = $this->createMock(HistoryPlugin::class);
+        $historyPlugin->method('getIterator')->willReturn(new \ArrayIterator($calls));
+        return null;
+
+        return new Guzzle3DataCollector($historyPlugin);
+    }
+
 
     /**
      * Test a DataCollector containing one valid call
@@ -52,8 +65,8 @@ class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
         $call = $this->stubCall($callRequest, $callResponse, $callInfos);
         $guzzleDataCollector = $this->createGuzzleCollector(array($call));
 
-        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
-        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
+        $request = $this->createMock('Symfony\Component\HttpFoundation\Request');
+        $response = $this->createMock('Symfony\Component\HttpFoundation\Response');
         $guzzleDataCollector->collect($request, $response);
 
         $this->assertEquals(count($guzzleDataCollector->getCalls()), 1);
@@ -105,8 +118,8 @@ class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
         $call = $this->stubCall($callRequest, $callResponse, $callInfos);
         $guzzleDataCollector = $this->createGuzzleCollector(array($call));
 
-        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
-        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
+        $request = $this->createMock('Symfony\Component\HttpFoundation\Request');
+        $response = $this->createMock('Symfony\Component\HttpFoundation\Response');
         $guzzleDataCollector->collect($request, $response);
 
         $this->assertEquals(count($guzzleDataCollector->getCalls()), 1);
@@ -150,13 +163,13 @@ class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
      * In this case the call contains a Guzzle\Http\Message\EntityEnclosingRequestInterface
      * which should be sanitized/casted as a string
      */
-    public function testCollectBodyRequestCall()
+    public function testCollectBodyRequestCall(): void
     {
-        $callBody = $this->getMock('Guzzle\Stream\StreamInterface');
+        $callBody = $this->createMock(StreamInterface::class);
         $callBody
             ->expects($this->once())
             ->method('__toString')
-            ->will($this->returnValue('Request body string'))
+            ->willReturn('Request body string')
         ;
         $callInfos = array('connect_time' => 15, 'total_time' => 150);
         $callUrlQuery = $this->stubQuery(array('foo' => 'bar'));
@@ -165,8 +178,8 @@ class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
         $call = $this->stubCall($callRequest, $callResponse, $callInfos);
         $guzzleDataCollector = $this->createGuzzleCollector(array($call));
 
-        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
-        $response = $this->getMock('Symfony\Component\HttpFoundation\Response');
+        $request = $this->createMock('Symfony\Component\HttpFoundation\Request');
+        $response = $this->createMock('Symfony\Component\HttpFoundation\Response');
         $guzzleDataCollector->collect($request, $response);
 
         $this->assertEquals(count($guzzleDataCollector->getCalls()), 1);
@@ -202,18 +215,6 @@ class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-    }
-
-    /**
-     * Create the DataCollector
-     *
-     * @param array $calls An array of calls
-     *
-     * @return Playbloom\Bundle\GuzzleBundle\DataCollector\GuzzleDataCollector
-     */
-    protected function createGuzzleCollector(array $calls = array())
-    {
-        return new GuzzleDataCollector(new HistoryPluginStub($calls));
     }
 
     /**
@@ -267,7 +268,7 @@ class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
      */
     protected function stubQuery(array $query)
     {
-        $query = $this->getMock('Guzzle\Http\QueryString');
+        $query = $this->createMock('Guzzle\Http\QueryString');
         $query
             ->expects($this->any())
             ->method('__toString()')
@@ -298,7 +299,7 @@ class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
     protected function stubRequest($method, $scheme, $host, $path, $query, $body = null)
     {
         $mockClassName = null === $body ? 'RequestInterface' : 'EntityEnclosingRequestInterface';
-        $request = $this->getMock(sprintf('Guzzle\Http\Message\%s', $mockClassName));
+        $request = $this->createMock(sprintf('Guzzle\Http\Message\%s', $mockClassName));
         $request
             ->expects($this->any())
             ->method('getMethod')
@@ -316,7 +317,7 @@ class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
             ->method('getHost')
             ->will($this->returnValue($host))
         ;
-		
+
 		$request
             ->expects($this->any())
             ->method('getPort')
@@ -357,7 +358,7 @@ class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
      */
     protected function stubResponse($code, $reason, $body)
     {
-        $response = $this->getMock('Guzzle\Http\Message\Response', array(), array($code));
+        $response = $this->createMock('Guzzle\Http\Message\Response', array(), array($code));
         $response
             ->expects($this->any())
             ->method('getStatusCode')
@@ -384,28 +385,5 @@ class Guzzle3DataCollectorTest extends \PHPUnit_Framework_TestCase
         ;
 
         return $response;
-    }
-}
-
-/**
- * Fake History plugin
- */
-class HistoryPluginStub extends HistoryPlugin implements \IteratorAggregate
-{
-    private $stubJournal = array();
-
-    public function __construct(array $stubJournal)
-    {
-        $this->stubJournal = $stubJournal;
-    }
-
-    /**
-     * Get the requests in the history
-     *
-     * @return \ArrayIterator
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->stubJournal);
     }
 }

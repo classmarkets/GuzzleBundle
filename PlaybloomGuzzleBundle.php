@@ -2,10 +2,9 @@
 
 namespace Playbloom\Bundle\GuzzleBundle;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-
 use Playbloom\Bundle\GuzzleBundle\DependencyInjection\Compiler\ClientPluginPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
  * Playbloom Guzzle Bundle
@@ -14,7 +13,7 @@ use Playbloom\Bundle\GuzzleBundle\DependencyInjection\Compiler\ClientPluginPass;
  */
 class PlaybloomGuzzleBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 

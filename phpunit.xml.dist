@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" bootstrap="Tests/bootstrap.php">
-    <testsuites>
-        <testsuite name="PlaybloomGuzzleBundle Test Suite">
-            <directory>./Tests</directory>
-        </testsuite>
-    </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory>./</directory>
-            <exclude>
-                <directory>./vendor</directory>
-                <directory>./Tests</directory>
-                <directory>./Resources</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+<phpunit colors="true" bootstrap="Tests/bootstrap.php" cacheDirectory=".phpunit.cache">
+  <php>
+    <ini name="display_errors" value="1" />
+    <ini name="error_reporting" value="-1" />
+  </php>
+  <testsuites>
+    <testsuite name="PlaybloomGuzzleBundle Test Suite">
+      <directory>./Tests</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory>./</directory>
+    </include>
+    <exclude>
+      <directory>./vendor</directory>
+      <directory>./Tests</directory>
+      <directory>./Resources</directory>
+    </exclude>
+  </source>
 </phpunit>

@@ -11,17 +11,17 @@ use GuzzleHttp\Transaction;
 class TransactionRecorder implements SubscriberInterface
 {
     /** @var Transaction[] */
-    private $transactions = array();
+    private array $transactions = [];
 
     /** @var int The maximum number of requests to maintain in the history */
-    private $limit;
+    private int $limit;
 
-    public function __construct($limit = 10)
+    public function __construct(int $limit = 10)
     {
         $this->limit = $limit;
     }
 
-    public function getEvents()
+    public function getEvents(): array
     {
         return [
             'complete' => ['onComplete', RequestEvents::LATE],
@@ -29,21 +29,21 @@ class TransactionRecorder implements SubscriberInterface
         ];
     }
 
-    public function onComplete(CompleteEvent $event)
+    public function onComplete(CompleteEvent $event): void
     {
         $this->add($event->getTransaction());
     }
 
-    public function onError(ErrorEvent $event)
+    public function onError(ErrorEvent $event): void
     {
         $lightTx = clone $event->getTransaction();
         unset($lightTx->exception);
         $this->add($lightTx);
     }
 
-    private function add(Transaction $transaction)
+    private function add(Transaction $transaction): void
     {
-        $transaction->stackTrace = debug_backtrace();
+        $transaction->transferInfo['stackTrace'] = debug_backtrace();
         $this->transactions[] = $transaction;
         if (count($this->transactions) > $this->limit) {
             array_shift($this->transactions);
@@ -53,7 +53,7 @@ class TransactionRecorder implements SubscriberInterface
     /**
      * @return Transaction[]
      */
-    public function getTransactions()
+    public function getTransactions(): array
     {
         return array_values($this->transactions); // be zero based in case we array_shift'ed
     }

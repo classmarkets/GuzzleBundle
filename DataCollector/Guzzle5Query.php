@@ -9,8 +9,8 @@ use IteratorAggregate;
 
 class Guzzle5Query implements ArrayAccess, IteratorAggregate
 {
-    private $queryArray;
-    private $queryString;
+    private array $queryArray;
+    private string $queryString;
 
     public function __construct(Query $query)
     {
@@ -18,32 +18,32 @@ class Guzzle5Query implements ArrayAccess, IteratorAggregate
         $this->queryString = $query->__toString();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->queryString;
     }
 
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->queryArray);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->queryArray[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->queryArray[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->queryArray[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->queryArray[$offset]);
     }

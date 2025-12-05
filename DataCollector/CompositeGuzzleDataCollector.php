@@ -2,35 +2,34 @@
 
 namespace Playbloom\Bundle\GuzzleBundle\DataCollector;
 
-use Throwable;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
+use Throwable;
 
 class CompositeGuzzleDataCollector extends DataCollector
 {
     /** @var DataCollectorInterface[] */
-    private $collectors;
+    private array $collectors;
 
     public function __construct(...$collectors)
     {
         $this->collectors = $collectors;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'guzzle';
     }
 
-    public function collect(Request $request, Response $response, Throwable $exception = null)
+    public function collect(Request $request, Response $response, ?Throwable $exception = null): void
     {
         $allData = [
             'total_time'  => 0,
             'error_count' => 0,
             'calls'       => [],
-            'methods'     => []
+            'methods'     => [],
         ];
 
         foreach ($this->collectors as $collector) {
@@ -53,39 +52,27 @@ class CompositeGuzzleDataCollector extends DataCollector
         $this->data = $allData;
     }
 
-    /**
-     * @return array
-     */
-    public function getCalls()
+    public function getCalls(): array
     {
-        return isset($this->data['calls']) ? $this->data['calls'] : array();
+        return isset($this->data['calls']) ? $this->data['calls'] : [];
     }
 
-    /**
-     * @return int
-     */
-    public function countErrors()
+    public function countErrors(): int
     {
         return isset($this->data['error_count']) ? $this->data['error_count'] : 0;
     }
 
-    /**
-     * @return array
-     */
-    public function getMethods()
+    public function getMethods(): array
     {
-        return isset($this->data['methods']) ? $this->data['methods'] : array();
+        return isset($this->data['methods']) ? $this->data['methods'] : [];
     }
 
-    /**
-     * @return int
-     */
-    public function getTotalTime()
+    public function getTotalTime(): int
     {
         return isset($this->data['total_time']) ? $this->data['total_time'] : 0;
     }
 
-    public function reset()
+    public function reset(): void
     {
         $this->data = [];
     }
